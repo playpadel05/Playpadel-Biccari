@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Play Padel – Biccari FG</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--gold:#C9A96E;--gold2:#E8D5B0;--dark:#161616;--dark2:#222;--mid:#555;--light:#F6F4F0;--white:#fff;--border:rgba(201,169,110,0.2);--court:#1a3a22}
+body{font-family:'Jost',sans-serif;background:var(--white);color:var(--dark);overflow-x:hidden}
+nav{position:sticky;top:0;z-index:200;background:rgba(255,255,255,0.97);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:60px;backdrop-filter:blur(10px)}
+.logo{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:600;letter-spacing:.04em;cursor:pointer}
+.logo span{color:var(--gold)}
+.nav-links{display:flex;list-style:none;flex-wrap:wrap}
+.nav-links a{text-decoration:none;font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--mid);padding:0 .8rem;height:60px;display:flex;align-items:center;border-bottom:2px solid transparent;transition:all .2s;cursor:pointer}
+.nav-links a:hover,.nav-links a.active{color:var(--dark);border-bottom-color:var(--gold)}
+.page-section{display:none;animation:fadeIn .3s ease}
+.page-section.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.hero{background:var(--dark);min-height:88vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:4rem 2rem;position:relative;overflow:hidden}
+.hero-bg{position:absolute;opacity:.05;width:600px;height:600px;pointer-events:none}
+.hero-badge{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);border:1px solid var(--border);padding:5px 16px;border-radius:2px;margin-bottom:2rem;display:inline-block}
+.hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(48px,8vw,88px);font-weight:300;line-height:1;color:#fff;margin-bottom:1.25rem}
+.hero h1 em{font-style:italic;color:var(--gold)}
+.hero-sub{font-size:14px;font-weight:300;color:rgba(255,255,255,.55);line-height:1.9;max-width:420px;margin:0 auto 2.5rem}
+.hero-pills{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap;margin-bottom:3rem}
+.pill{font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:6px 14px;border:1px solid var(--border);border-radius:30px;color:rgba(255,255,255,.5)}
+.hero-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+.btn-gold{background:var(--gold);color:var(--dark);border:none;padding:13px 30px;font-family:'Jost',sans-serif;font-size:12px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;border-radius:2px;transition:.2s}
+.btn-gold:hover{background:var(--gold2)}
+.btn-outline{background:transparent;color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.2);padding:12px 26px;font-family:'Jost',sans-serif;font-size:12px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;border-radius:2px;transition:.2s}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold)}
+.sec{padding:4rem 2.5rem}
+.sec-label{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:.75rem}
+.sec-title{font-family:'Cormorant Garamond',serif;font-size:clamp(30px,4vw,48px);font-weight:300;line-height:1.15;margin-bottom:.75rem}
+.sec-title em{font-style:italic;color:var(--mid)}
+.sec-desc{font-size:13px;font-weight:300;line-height:1.85;color:var(--mid);max-width:500px;margin-bottom:2.5rem}
+.info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:2px;background:var(--border);margin-top:2rem}
+.info-card{background:var(--white);padding:2rem 1.75rem}
+.info-name{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;margin-bottom:.5rem}
+.info-text{font-size:13px;font-weight:300;line-height:1.75;color:var(--mid)}
+.info-text strong{font-weight:500;color:var(--dark)}
+.booking-wrap{display:grid;grid-template-columns:1fr 1.1fr;gap:3rem;align-items:start}
+@media(max-width:700px){.booking-wrap{grid-template-columns:1fr}}
+.pay-options{display:flex;flex-direction:column;gap:1rem;margin-bottom:2rem}
+.pay-option{border:1px solid var(--border);padding:1.25rem 1.5rem;border-radius:3px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:1rem}
+.pay-option.selected{border-color:var(--gold);background:rgba(201,169,110,.06)}
+.pay-radio{width:16px;height:16px;border-radius:50%;border:1.5px solid rgba(201,169,110,.5);flex-shrink:0;position:relative}
+.pay-option.selected .pay-radio{border-color:var(--gold)}
+.pay-option.selected .pay-radio::after{content:'';position:absolute;inset:3px;background:var(--gold);border-radius:50%}
+.pay-label{font-size:13px;font-weight:500;color:var(--dark)}
+.pay-desc{font-size:11px;color:var(--mid);margin-top:2px;font-weight:300}
+.form-box{background:var(--light);padding:2rem;border-radius:3px;border:1px solid var(--border)}
+.fgroup{display:flex;flex-direction:column;gap:5px;margin-bottom:1rem}
+.fgroup label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--mid)}
+.fgroup input,.fgroup select{background:var(--white);border:1px solid var(--border);border-radius:2px;padding:9px 12px;font-family:'Jost',sans-serif;font-size:13px;color:var(--dark);outline:none;transition:.2s;width:100%}
+.fgroup input:focus,.fgroup select:focus{border-color:var(--gold)}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.rank-section{background:var(--dark)}
+.rank-section .sec-title{color:#fff}
+.rank-section .sec-desc{color:rgba(255,255,255,.45)}
+.rank-top{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:rgba(201,169,110,.15);margin-bottom:2px}
+@media(max-width:500px){.rank-top{grid-template-columns:1fr}}
+.rank-podio{background:var(--dark2);padding:2rem 1.5rem;text-align:center;position:relative}
+.rank-podio.primo{border-top:3px solid var(--gold)}
+.rank-num-big{font-family:'Cormorant Garamond',serif;font-size:48px;font-weight:300;color:rgba(201,169,110,.15);position:absolute;top:.5rem;right:1rem;line-height:1}
+.rank-avatar{width:52px;height:52px;border-radius:50%;background:rgba(201,169,110,.15);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-weight:500;font-size:15px;color:var(--gold);margin:0 auto 1rem}
+.rank-name{font-size:14px;font-weight:500;color:#fff;margin-bottom:.25rem}
+.rank-lv{display:inline-block;font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:3px 10px;border-radius:30px;margin-bottom:.5rem}
+.lv-Oro{background:rgba(201,169,110,.2);color:var(--gold)}
+.lv-Argento{background:rgba(180,178,169,.15);color:#b4b2a9}
+.lv-Bronzo{background:rgba(139,90,43,.15);color:#a06030}
+.lv-Ferro{background:rgba(74,74,74,.2);color:#888}
+.rank-pts{font-size:22px;font-weight:300;font-family:'Cormorant Garamond',serif;color:var(--gold)}
+.rank-pts span{font-size:11px;color:rgba(255,255,255,.3);font-family:'Jost',sans-serif}
+.rank-table{background:var(--dark2);width:100%;border-collapse:collapse}
+.rank-table tr{border-bottom:1px solid rgba(201,169,110,.08)}
+.rank-table td{padding:.85rem 1.5rem;font-size:13px;color:rgba(255,255,255,.65)}
+.rank-table td:first-child{color:rgba(255,255,255,.25);width:40px;text-align:center}
+.rname{font-weight:500;color:#fff}
+.matches-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem;margin-top:2rem}
+.match-card{border:1px solid var(--border);border-radius:6px;overflow:hidden;transition:border-color .25s,box-shadow .25s}
+.match-card:hover{border-color:var(--gold);box-shadow:0 4px 24px rgba(201,169,110,.1)}
+.court-wrap{background:var(--court);height:160px;overflow:hidden}
+.court-svg{width:100%;height:100%}
+@keyframes pulse{0%,100%{opacity:.5}50%{opacity:1}}
+.slot-empty{animation:pulse 1.8s ease-in-out infinite;cursor:pointer}
+.match-body{padding:1.25rem 1.5rem}
+.match-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;margin-bottom:.3rem}
+.match-meta{font-size:12px;color:var(--mid);font-weight:300;line-height:1.7;margin-bottom:1rem}
+.match-slots-row{display:flex;gap:.5rem;align-items:center;margin-bottom:1rem;flex-wrap:wrap}
+.mslot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;transition:.2s;flex-shrink:0}
+.mslot.filled{background:rgba(201,169,110,.15);border:1.5px solid var(--gold);color:var(--gold)}
+.mslot.empty{background:transparent;border:1.5px dashed rgba(201,169,110,.4);color:rgba(201,169,110,.5);cursor:pointer;font-size:16px}
+.mslot.empty:hover{background:rgba(201,169,110,.1);border-color:var(--gold);transform:scale(1.1)}
+.match-badge{font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:3px 10px;border-radius:30px;background:rgba(201,169,110,.1);color:var(--gold);margin-left:auto}
+.match-badge.full{background:rgba(200,50,50,.08);color:#c03232}
+.join-btn{width:100%;padding:10px;font-family:'Jost',sans-serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;border:1px solid var(--border);background:transparent;cursor:pointer;border-radius:2px;color:var(--mid);transition:.2s}
+.join-btn:hover:not(:disabled){border-color:var(--gold);color:var(--dark)}
+.join-btn:disabled{opacity:.35;cursor:not-allowed}
+.contacts-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:2px;background:var(--border);margin-top:2rem}
+.contact-card{background:var(--white);padding:2rem 1.75rem}
+.cc-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem}
+.cc-val{font-size:15px;color:var(--dark);line-height:1.6}
+.cc-sub{font-size:12px;color:var(--mid);font-weight:300;margin-top:.25rem}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:500;align-items:center;justify-content:center;padding:1rem}
+.modal-overlay.open{display:flex}
+.modal{background:var(--white);border-radius:4px;padding:2.5rem;max-width:420px;width:100%;position:relative;max-height:90vh;overflow-y:auto}
+.modal h3{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;margin-bottom:.5rem}
+.modal p{font-size:13px;color:var(--mid);font-weight:300;margin-bottom:1.5rem;line-height:1.7}
+.modal-close{position:absolute;top:1rem;right:1.25rem;background:none;border:none;font-size:20px;cursor:pointer;color:var(--mid)}
+.btn-full{width:100%;padding:12px;background:var(--gold);color:var(--dark);border:none;font-family:'Jost',sans-serif;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;border-radius:2px;margin-top:.5rem}
+.btn-full:hover{background:var(--gold2)}
+.toast{position:fixed;bottom:2rem;right:2rem;background:var(--dark);color:#fff;padding:.85rem 1.5rem;border-radius:3px;font-size:13px;border-left:3px solid var(--gold);z-index:1000;transform:translateY(100px);opacity:0;transition:.3s;max-width:300px}
+.toast.show{transform:none;opacity:1}
+.loading{display:flex;align-items:center;justify-content:center;padding:3rem;color:var(--mid);font-size:13px;gap:.75rem}
+.spinner{width:18px;height:18px;border:2px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+footer{background:#0f0f0f;padding:1.75rem 2.5rem;display:flex;align-items:center;justify-content:space-between;border-top:1px solid rgba(201,169,110,.12);flex-wrap:wrap;gap:1rem}
+.footer-logo{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;color:rgba(255,255,255,.35)}
+.footer-logo span{color:var(--gold)}
+.footer-copy{font-size:11px;color:rgba(255,255,255,.18)}
+@media(max-width:600px){nav{padding:0 1rem}.nav-links a{padding:0 .5rem;font-size:10px}.sec{padding:2.5rem 1.25rem}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="logo" onclick="showSection('home')">Play <span>Padel</span></div>
+  <ul class="nav-links">
+    <li><a onclick="showSection('info')" id="nav-info">Info</a></li>
+    <li><a onclick="showSection('booking')" id="nav-booking">Prenota</a></li>
+    <li><a onclick="showSection('ranking')" id="nav-ranking">Ranking</a></li>
+    <li><a onclick="showSection('matches')" id="nav-matches">Partite</a></li>
+    <li><a onclick="showSection('contacts')" id="nav-contacts">Contatti</a></li>
+  </ul>
+</nav>
+
+<div class="page-section active" id="sec-home">
+  <div class="hero">
+    <svg class="hero-bg" viewBox="0 0 400 400" fill="none"><rect x="40" y="40" width="320" height="320" stroke="white" stroke-width="1.5"/><line x1="40" y1="200" x2="360" y2="200" stroke="white" stroke-width="1.5"/><line x1="200" y1="40" x2="200" y2="360" stroke="white" stroke-width="1"/><rect x="40" y="130" width="100" height="140" stroke="white" stroke-width="1"/><rect x="260" y="130" width="100" height="140" stroke="white" stroke-width="1"/><circle cx="200" cy="200" r="30" stroke="white" stroke-width="1"/></svg>
+    <div class="hero-badge">Centro Padel · Biccari FG</div>
+    <h1>Il tuo campo<br/>da <em>padel</em><br/>a Biccari</h1>
+    <p class="hero-sub">Campo professionale, ranking reale, partite organizzate ogni settimana. Prenota online o al campo.</p>
+    <div class="hero-pills"><div class="pill">Aperto 7/7</div><div class="pill">08:30 – 00:00</div><div class="pill">Sessioni 90 min</div></div>
+    <div class="hero-btns">
+      <button class="btn-gold" onclick="showSection('booking')">Prenota il campo</button>
+      <button class="btn-outline" onclick="showSection('ranking')">Entra nel ranking</button>
+    </div>
+  </div>
+</div>
+
+<div class="page-section" id="sec-info">
+  <div class="sec">
+    <div class="sec-label">Il nostro centro</div>
+    <div class="sec-title">Informazioni<br/><em>generali</em></div>
+    <div class="info-grid">
+      <div class="info-card"><div style="margin-bottom:1rem"><svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="11" stroke="#C9A96E" stroke-width="1.5"/><path d="M14 7L14 14.5L18 17" stroke="#C9A96E" stroke-width="1.5" stroke-linecap="round"/></svg></div><div class="info-name">Orari</div><div class="info-text"><strong>Ogni giorno</strong><br/>08:30 – 00:00<br/>Sessioni da <strong>90 min</strong></div></div>
+      <div class="info-card"><div style="margin-bottom:1rem"><svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M14 3C9.6 3 6 6.5 6 10.8C6 17 14 25 14 25S22 17 22 10.8C22 6.5 18.4 3 14 3Z" stroke="#C9A96E" stroke-width="1.5"/><circle cx="14" cy="10.5" r="2.5" stroke="#C9A96E" stroke-width="1.5"/></svg></div><div class="info-name">Dove siamo</div><div class="info-text"><strong>Via Calcare</strong><br/>Biccari (FG) · Puglia</div></div>
+      <div class="info-card"><div style="margin-bottom:1rem"><svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="10" r="4.5" stroke="#C9A96E" stroke-width="1.5"/><path d="M5 24C5 19 9 15.5 14 15.5S23 19 23 24" stroke="#C9A96E" stroke-width="1.5" stroke-linecap="round"/></svg></div><div class="info-name">Gestore</div><div class="info-text"><strong>Giuseppe</strong><br/><a href="tel:+393491545968" style="color:var(--gold);text-decoration:none">349 154 5968</a></div></div>
+      <div class="info-card"><div style="margin-bottom:1rem"><svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M14 4L17.5 11L25 11L19 15.5L21.5 23L14 18.5L6.5 23L9 15.5L3 11L10.5 11Z" stroke="#C9A96E" stroke-width="1.5" fill="none"/></svg></div><div class="info-name">Cosa offriamo</div><div class="info-text">• Prenotazione online<br/>• Ranking reale<br/>• Partite organizzate<br/>• Noleggio attrezzatura</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="page-section" id="sec-booking">
+  <div class="sec">
+    <div class="sec-label">Riserva il campo</div>
+    <div class="sec-title">Prenota<br/><em>online</em></div>
+    <div class="sec-desc">Sessioni da 90 minuti. Paga online oppure al campo.</div>
+    <div class="booking-wrap">
+      <div>
+        <div style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--mid);margin-bottom:1rem">Pagamento</div>
+        <div class="pay-options">
+          <div class="pay-option selected" onclick="selectPay(this,'online')"><div class="pay-radio"></div><div><div class="pay-label">Paga online</div><div class="pay-desc">Carta, confermato subito.</div></div></div>
+          <div class="pay-option" onclick="selectPay(this,'campo')"><div class="pay-radio"></div><div><div class="pay-label">Paga al campo</div><div class="pay-desc">Prenota ora, paga all'arrivo.</div></div></div>
+        </div>
+        <div style="background:var(--light);padding:1.5rem;border-radius:3px;border:1px solid var(--border)">
+          <div style="font-size:12px;font-weight:500;margin-bottom:.5rem">Orari disponibili</div>
+          <div style="font-size:12px;color:var(--mid);font-weight:300;line-height:1.9">08:30 · 10:00 · 11:30 · 13:00<br/>14:30 · 16:00 · 17:30 · 19:00<br/>20:30 · 22:00<br/><span style="color:var(--gold);font-size:11px">90 minuti per sessione</span></div>
+        </div>
+      </div>
+      <div class="form-box">
+        <div class="frow"><div class="fgroup"><label>Nome</label><input type="text" id="bk-nome" placeholder="Mario"/></div><div class="fgroup"><label>Cognome</label><input type="text" id="bk-cog" placeholder="Rossi"/></div></div>
+        <div class="fgroup"><label>Telefono</label><input type="tel" id="bk-tel" placeholder="+39 333 000 0000"/></div>
+        <div class="frow">
+          <div class="fgroup"><label>Data</label><input type="date" id="bk-data"/></div>
+          <div class="fgroup"><label>Orario</label><select id="bk-ora"><option value="">-- Seleziona --</option><option>08:30 – 10:00</option><option>10:00 – 11:30</option><option>11:30 – 13:00</option><option>13:00 – 14:30</option><option>14:30 – 16:00</option><option>16:00 – 17:30</option><option>17:30 – 19:00</option><option>19:00 – 20:30</option><option>20:30 – 22:00</option><option>22:00 – 23:30</option></select></div>
+        </div>
+        <div class="fgroup"><label>Note</label><input type="text" id="bk-note" placeholder="Es. noleggio racchette..."/></div>
+        <button class="btn-full" onclick="submitBooking()">Conferma Prenotazione</button>
+        <div style="text-align:center;margin-top:.75rem;font-size:11px;color:var(--mid)">Oppure chiama: <a href="tel:+393491545968" style="color:var(--gold);text-decoration:none">349 154 5968</a></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page-section rank-section" id="sec-ranking">
+  <div class="sec">
+    <div class="sec-label" style="color:var(--gold)">Classifica</div>
+    <div class="sec-title">Ranking<br/><em>Padel</em></div>
+    <div class="sec-desc">Registrati, gioca, accumula punti. Aggiornato in tempo reale.</div>
+    <div style="display:flex;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap">
+      <button class="btn-gold" onclick="openModal('register')">Registrati</button>
+      <button class="btn-outline" onclick="openModal('addResult')">Aggiungi risultato</button>
+    </div>
+    <div id="ranking-content"><div class="loading"><div class="spinner"></div>Caricamento...</div></div>
+    <div style="margin-top:2rem;background:rgba(255,255,255,.04);border:1px solid var(--border);padding:1.5rem;border-radius:3px;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1.5rem">
+      <div><div style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:.5rem">Livelli</div><div style="display:flex;flex-direction:column;gap:.3rem"><span class="rank-lv lv-Oro" style="align-self:flex-start">Oro — 1000+</span><span class="rank-lv lv-Argento" style="align-self:flex-start">Argento — 700-999</span><span class="rank-lv lv-Bronzo" style="align-self:flex-start">Bronzo — 400-699</span><span class="rank-lv lv-Ferro" style="align-self:flex-start">Ferro — 0-399</span></div></div>
+      <div><div style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:.5rem">Punti</div><div style="font-size:13px;color:rgba(255,255,255,.5);font-weight:300;line-height:1.9">Vittoria: <span style="color:var(--gold)">+50</span><br/>Sconfitta: <span style="color:rgba(255,255,255,.3)">+10</span><br/>Vittoria vs sup: <span style="color:var(--gold)">+80</span></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="page-section" id="sec-matches">
+  <div class="sec">
+    <div class="sec-label">Trova o crea</div>
+    <div class="sec-title">Partite<br/><em>organizzate</em></div>
+    <div class="sec-desc">Premi <strong style="color:var(--gold)">+</strong> sul campo per unirti. Crea una partita e aspetta gli altri giocatori.</div>
+    <div style="margin-bottom:1.5rem"><button class="btn-gold" onclick="openModal('createMatch')">Crea partita</button></div>
+    <div id="matches-content"><div class="loading"><div class="spinner"></div>Caricamento...</div></div>
+  </div>
+</div>
+
+<div class="page-section" id="sec-contacts">
+  <div class="sec">
+    <div class="sec-label">Contatti</div>
+    <div class="sec-title">Siamo qui<br/><em>per te</em></div>
+    <div class="contacts-grid">
+      <div class="contact-card"><div class="cc-label">Gestore</div><div class="cc-val">Giuseppe</div><div class="cc-sub">Tutti i giorni</div></div>
+      <div class="contact-card"><div class="cc-label">Telefono</div><div class="cc-val"><a href="tel:+393491545968" style="color:var(--dark);text-decoration:none">349 154 5968</a></div><div class="cc-sub">Chiama o WhatsApp</div></div>
+      <div class="contact-card"><div class="cc-label">Indirizzo</div><div class="cc-val">Via Calcare<br/>Biccari (FG)</div><div class="cc-sub">Puglia · 71032</div></div>
+      <div class="contact-card"><div class="cc-label">Orari</div><div class="cc-val">08:30 – 00:00</div><div class="cc-sub">7 giorni su 7</div></div>
+    </div>
+    <div style="margin-top:2rem;background:var(--dark);padding:2rem;border-radius:3px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+      <div><div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:.4rem">Contatta Giuseppe</div><div style="font-size:22px;font-family:'Cormorant Garamond',serif;font-weight:300;color:#fff">349 154 5968</div></div>
+      <div style="display:flex;gap:.75rem"><a href="tel:+393491545968"><button class="btn-gold">Chiama</button></a><a href="https://wa.me/393491545968" target="_blank"><button class="btn-outline">WhatsApp</button></a></div>
+    </div>
+  </div>
+</div>
+
+<footer><div class="footer-logo">Play <span>Padel</span></div><div class="footer-copy">© 2025 Play Padel · Via Calcare, Biccari FG</div></footer>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="modal-register"><div class="modal"><button class="modal-close" onclick="closeModal('register')">×</button><h3>Registrati al Ranking</h3><p>Crea il tuo profilo e scala la classifica.</p><div class="fgroup"><label>Nome e Cognome</label><input type="text" id="reg-nome" placeholder="Mario Rossi"/></div><div class="fgroup"><label>Telefono</label><input type="tel" id="reg-tel" placeholder="+39 333 000 0000"/></div><div class="fgroup"><label>Livello</label><select id="reg-level"><option value="Ferro">Principiante (Ferro)</option><option value="Bronzo">Intermedio (Bronzo)</option><option value="Argento">Avanzato (Argento)</option><option value="Oro">Esperto (Oro)</option></select></div><button class="btn-full" onclick="submitRegister()">Registrati</button></div></div>
+
+<div class="modal-overlay" id="modal-addResult"><div class="modal"><button class="modal-close" onclick="closeModal('addResult')">×</button><h3>Aggiungi risultato</h3><p>Il gestore approverà il risultato e aggiornerà i tuoi punti.</p><div class="fgroup"><label>Il tuo nome</label><input type="text" id="res-nome" placeholder="Mario Rossi"/></div><div class="fgroup"><label>Avversario</label><input type="text" id="res-avv" placeholder="Luca C."/></div><div class="frow"><div class="fgroup"><label>Data</label><input type="date" id="res-data"/></div><div class="fgroup"><label>Esito</label><select id="res-esito"><option value="Vittoria">Vittoria</option><option value="Sconfitta">Sconfitta</option></select></div></div><div class="fgroup"><label>Punteggio</label><input type="text" id="res-score" placeholder="6-4, 7-5"/></div><button class="btn-full" onclick="submitResult()">Invia risultato</button></div></div>
+
+<div class="modal-overlay" id="modal-createMatch"><div class="modal"><button class="modal-close" onclick="closeModal('createMatch')">×</button><h3>Crea una partita</h3><p>Pubblica e aspetta gli altri giocatori.</p><div class="fgroup"><label>Il tuo nome</label><input type="text" id="cm-nome" placeholder="Mario Rossi"/></div><div class="frow"><div class="fgroup"><label>Data</label><input type="date" id="cm-data"/></div><div class="fgroup"><label>Orario</label><select id="cm-ora"><option>08:30</option><option>10:00</option><option>11:30</option><option>13:00</option><option>14:30</option><option>16:00</option><option>17:30</option><option>19:00</option><option>20:30</option><option>22:00</option></select></div></div><div class="fgroup"><label>Livello</label><select id="cm-level"><option>Tutti i livelli</option><option>Ferro</option><option>Bronzo</option><option>Argento</option><option>Oro</option></select></div><div class="fgroup"><label>Tipo</label><select id="cm-tipo"><option value="4">Doppio (4 giocatori)</option><option value="2">Singolo (2 giocatori)</option></select></div><button class="btn-full" onclick="submitCreateMatch()">Pubblica partita</button></div></div>
+
+<div class="modal-overlay" id="modal-join"><div class="modal"><button class="modal-close" onclick="closeModal('join')">×</button><h3>Unisciti</h3><p>Inserisci il tuo nome per occupare il posto.</p><div class="fgroup"><label>Il tuo nome</label><input type="text" id="join-nome" placeholder="Mario Rossi"/></div><button class="btn-full" onclick="confirmJoin()">Unisciti alla partita</button></div></div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js";
+
+const app = initializeApp({
+  apiKey:"AIzaSyDedRUBLyAT6yRxQ4ZJWwwJIlVvFyLEW8Q",
+  authDomain:"playpadel-biccari.firebaseapp.com",
+  projectId:"playpadel-biccari",
+  storageBucket:"playpadel-biccari.firebasestorage.app",
+  messagingSenderId:"239722542498",
+  appId:"1:239722542498:web:c085d112c3c560686c2efb"
+});
+const db = getFirestore(app);
+
+// expose helpers
+window._db=db;
+window._fs={collection,addDoc,getDocs,doc,updateDoc,query,orderBy,serverTimestamp};
+
+window.submitBooking=async function(){
+  const nome=v('bk-nome'),cog=v('bk-cog'),tel=v('bk-tel'),data=v('bk-data'),ora=v('bk-ora'),note=v('bk-note');
+  if(!nome||!data||!ora){toast('Compila nome, data e orario.');return;}
+  try{
+    await addDoc(collection(db,'prenotazioni'),{nome,cognome:cog,telefono:tel,data,orario:ora,note,pagamento:window._pay||'online',stato:'pending',createdAt:serverTimestamp()});
+    toast('✅ Prenotazione inviata! Giuseppe ti confermerà.');
+    ['bk-nome','bk-cog','bk-tel','bk-data','bk-ora','bk-note'].forEach(id=>document.getElementById(id).value='');
+  }catch(e){toast('Errore. Chiama il 349 154 5968.');}
+};
+
+window.submitRegister=async function(){
+  const nome=v('reg-nome'),tel=v('reg-tel'),level=v('reg-level');
+  if(!nome){toast('Inserisci il tuo nome.');return;}
+  try{
+    await addDoc(collection(db,'giocatori'),{nome,telefono:tel,level,pts:0,partite:0,createdAt:serverTimestamp()});
+    toast('✅ Registrazione inviata! Sarai aggiunto al ranking.');
+    closeModal('register');loadRanking();
+  }catch(e){toast('Errore. Riprova.');}
+};
+
+window.submitResult=async function(){
+  const nome=v('res-nome'),avv=v('res-avv'),data=v('res-data'),esito=v('res-esito'),score=v('res-score');
+  if(!nome||!avv){toast('Compila tutti i campi.');return;}
+  const punti=esito==='Vittoria'?50:10;
+  try{
+    await addDoc(collection(db,'risultati'),{giocatore:nome,avversario:avv,data,esito,punteggio:score,punti,approvato:false,createdAt:serverTimestamp()});
+    toast('✅ Risultato inviato! Il gestore lo approverà presto.');
+    closeModal('addResult');
+  }catch(e){toast('Errore. Riprova.');}
+};
+
+window.submitCreateMatch=async function(){
+  const nome=v('cm-nome'),data=v('cm-data'),ora=v('cm-ora'),level=v('cm-level'),slots=parseInt(v('cm-tipo'));
+  if(!nome||!data){toast('Inserisci nome e data.');return;}
+  const ini=nome.split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2)||'TU';
+  const players=[ini];for(let i=1;i<slots;i++)players.push(null);
+  try{
+    await addDoc(collection(db,'partite'),{titolo:'Partita di '+nome.split(' ')[0],data,ora,level,slots,players,createdAt:serverTimestamp()});
+    toast('✅ Partita pubblicata!');
+    closeModal('createMatch');loadMatches();
+  }catch(e){toast('Errore. Riprova.');}
+};
+
+let _jMatchId=null,_jSlot=null;
+window._pendingJoin=function(mid,slot){_jMatchId=mid;_jSlot=slot;document.getElementById('join-nome').value='';openModal('join');};
+window.confirmJoin=async function(){
+  const nome=v('join-nome');
+  if(!nome){toast('Inserisci il tuo nome.');return;}
+  const ini=nome.split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2)||'TU';
+  try{
+    const snap=await getDocs(collection(db,'partite'));
+    for(const d of snap.docs){
+      if(d.id===_jMatchId){
+        const pl=[...d.data().players];pl[_jSlot]=ini;
+        await updateDoc(doc(db,'partite',_jMatchId),{players:pl});break;
+      }
+    }
+    toast('✅ Sei nella partita!');closeModal('join');loadMatches();
+  }catch(e){toast('Errore. Riprova.');}
+};
+
+window.loadRanking=async function(){
+  const el=document.getElementById('ranking-content');
+  el.innerHTML=loading();
+  try{
+    const snap=await getDocs(query(collection(db,'giocatori'),orderBy('pts','desc')));
+    const pl=[];snap.forEach(d=>pl.push({id:d.id,...d.data()}));
+    if(!pl.length){el.innerHTML='<div style="text-align:center;padding:2rem;color:rgba(255,255,255,.35);font-size:13px">Nessun giocatore ancora. Sii il primo a registrarti!</div>';return;}
+    let html='';
+    const top=pl.slice(0,Math.min(3,pl.length));
+    const podio=pl.length===1?[null,top[0],null]:pl.length===2?[top[1],top[0],null]:[top[1],top[0],top[2]];
+    html+='<div class="rank-top">';
+    podio.forEach((p,i)=>{
+      if(!p){html+='<div class="rank-podio"></div>';return;}
+      const pos=[2,1,3][i];
+      html+=`<div class="rank-podio ${pos===1?'primo':''}"><div class="rank-num-big">${pos}</div><div class="rank-avatar">${p.nome.split(' ').map(w=>w[0]).join('').slice(0,2)}</div><div class="rank-name">${p.nome}</div><div class="rank-lv lv-${p.level}">${p.level}</div><div class="rank-pts">${p.pts} <span>pts</span></div></div>`;
+    });
+    html+='</div>';
+    if(pl.length>3){
+      html+='<table class="rank-table"><tbody>';
+      pl.slice(3).forEach((p,i)=>{html+=`<tr><td>${i+4}</td><td><span class="rname">${p.nome}</span></td><td><span class="rank-lv lv-${p.level}" style="font-size:10px">${p.level}</span></td><td style="text-align:right;color:var(--gold)">${p.pts} pts</td></tr>`;});
+      html+='</tbody></table>';
+    }
+    el.innerHTML=html;
+  }catch(e){el.innerHTML='<div style="text-align:center;padding:2rem;color:rgba(255,255,255,.35)">Errore caricamento.</div>';}
+};
+
+window.loadMatches=async function(){
+  const el=document.getElementById('matches-content');
+  el.innerHTML=loading();
+  try{
+    const snap=await getDocs(query(collection(db,'partite'),orderBy('createdAt','desc')));
+    const ms=[];snap.forEach(d=>ms.push({id:d.id,...d.data()}));
+    if(!ms.length){el.innerHTML='<div style="text-align:center;padding:3rem;color:var(--mid);font-size:13px">Nessuna partita aperta. Creane una!</div>';return;}
+    el.innerHTML='<div class="matches-grid">'+ms.map(buildCard).join('')+'</div>';
+    document.querySelectorAll('.slot-empty').forEach(e=>{
+      e.addEventListener('click',function(){window._pendingJoin(this.dataset.match,parseInt(this.dataset.slot));});
+    });
+  }catch(e){el.innerHTML='<div style="text-align:center;padding:2rem;color:var(--mid)">Errore caricamento.</div>';}
+};
+
+function buildCard(m){
+  const pl=m.players||[],slots=m.slots||4,filled=pl.filter(p=>p!==null).length,empty=slots-filled,full=empty===0;
+  const pos4=[{x:75,y:80},{x:225,y:80},{x:75,y:115},{x:225,y:115}];
+  const pos2=[{x:75,y:75},{x:225,y:75}];
+  const positions=slots===2?pos2:pos4;
+  let svg=`<svg class="court-svg" viewBox="0 0 300 150" xmlns="http://www.w3.org/2000/svg"><rect width="300" height="150" fill="#1a3a22"/><rect x="20" y="10" width="260" height="130" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" rx="2"/><line x1="150" y1="10" x2="150" y2="140" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/><line x1="20" y1="37" x2="280" y2="37" stroke="rgba(255,255,255,0.3)" stroke-width="1"/><line x1="20" y1="113" x2="280" y2="113" stroke="rgba(255,255,255,0.3)" stroke-width="1"/><rect x="147" y="10" width="6" height="130" fill="rgba(255,255,255,0.12)" rx="1"/>`;
+  if(!full)svg+=`<circle r="5" fill="#C9A96E" opacity="0.9"><animateMotion dur="3s" repeatCount="indefinite"><mpath href="#bp-${m.id}"/></animateMotion></circle><path id="bp-${m.id}" d="M150 110 Q80 20 60 70 Q40 110 150 40 Q240 -10 230 90 Q220 130 150 110" fill="none"/>`;
+  for(let i=0;i<slots;i++){
+    const p=pl[i],pos=positions[i];
+    if(p)svg+=`<circle cx="${pos.x}" cy="${pos.y}" r="14" fill="rgba(201,169,110,0.25)" stroke="#C9A96E" stroke-width="1.5"/><text x="${pos.x}" y="${pos.y+4}" text-anchor="middle" font-family="Jost,sans-serif" font-size="9" font-weight="600" fill="#C9A96E">${p}</text>`;
+    else svg+=`<circle class="slot-empty" data-match="${m.id}" data-slot="${i}" cx="${pos.x}" cy="${pos.y}" r="14" fill="rgba(201,169,110,0.06)" stroke="rgba(201,169,110,0.5)" stroke-width="1.5" stroke-dasharray="4 3"/><text x="${pos.x}" y="${pos.y+6}" text-anchor="middle" font-family="Jost,sans-serif" font-size="18" fill="rgba(201,169,110,0.7)" pointer-events="none">+</text>`;
+  }
+  svg+='</svg>';
+  let slotsHtml='<div class="match-slots-row">';
+  for(let i=0;i<slots;i++){
+    if(pl[i])slotsHtml+=`<div class="mslot filled">${pl[i]}</div>`;
+    else slotsHtml+=`<div class="mslot empty" onclick="window._pendingJoin('${m.id}',${i})">+</div>`;
+  }
+  const firstEmpty=pl.indexOf(null);
+  slotsHtml+=`<div class="match-badge${full?' full':''}">${full?'Completo':empty+' posto'+(empty>1?'i':'')}</div></div>`;
+  return `<div class="match-card"><div class="court-wrap">${svg}</div><div class="match-body"><div class="match-title">${m.titolo||'Partita'}</div><div class="match-meta">${m.data||''} · ${m.ora||''} (90 min)<br/>Livello: ${m.level||'Tutti'}</div>${slotsHtml}<button class="join-btn" ${full?'disabled':''} onclick="window._pendingJoin('${m.id}',${firstEmpty})">${full?'Campo completo':'Unisciti alla partita'}</button></div></div>`;
+}
+
+// UTILS
+function v(id){return document.getElementById(id)?.value?.trim()||'';}
+function loading(){return '<div class="loading"><div class="spinner"></div>Caricamento...</div>';}
+window.toast=function(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3500);};
+window.showSection=function(id){
+  document.querySelectorAll('.page-section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-links a').forEach(a=>a.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  const nav=document.getElementById('nav-'+id);if(nav)nav.classList.add('active');
+  window.scrollTo(0,0);
+  if(id==='ranking')loadRanking();
+  if(id==='matches')loadMatches();
+};
+window.selectPay=function(el,val){document.querySelectorAll('.pay-option').forEach(o=>o.classList.remove('selected'));el.classList.add('selected');window._pay=val;};
+window._pay='online';
+window.openModal=function(id){document.getElementById('modal-'+id).classList.add('open');};
+window.closeModal=function(id){document.getElementById('modal-'+id).classList.remove('open');};
+const today=new Date().toISOString().split('T')[0];
+['bk-data','cm-data','res-data'].forEach(id=>{const el=document.getElementById(id);if(el)el.min=today;});
+</script>
+</body>
+</html>
