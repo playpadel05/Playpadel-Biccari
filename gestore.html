@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Gestore – Play Padel Biccari</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--gb:#2d7a2d;--yb:#e8c832;--dark:#161616;--dark2:#1e1e1e;--mid:#555;--light:#F6F4F0;--white:#fff;--border:rgba(45,122,45,0.2);--red:#c0392b;--orange:#d68910}
+body{font-family:'Jost',sans-serif;background:#f0ede8;color:var(--dark);min-height:100vh}
+#login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:var(--dark)}
+.login-box{background:var(--dark2);border:1px solid var(--border);border-radius:6px;padding:3rem 2.5rem;width:100%;max-width:360px;text-align:center}
+.login-logo{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;color:#fff;margin-bottom:.25rem}
+.login-logo span{color:var(--yb)}
+.login-sub{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:2.5rem}
+.login-box input{width:100%;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:3px;padding:12px 16px;font-family:'Jost',sans-serif;font-size:15px;color:#fff;outline:none;text-align:center;letter-spacing:.2em;margin-bottom:1rem}
+.login-box input:focus{border-color:var(--yb)}
+.login-box input::placeholder{letter-spacing:.1em;font-size:13px;color:rgba(255,255,255,.25)}
+.btn-login{width:100%;background:var(--gb);color:#fff;border:none;padding:13px;font-family:'Jost',sans-serif;font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;border-radius:3px}
+.btn-login:hover{background:#1a5a1a}
+.login-err{font-size:12px;color:#e74c3c;margin-top:.75rem;display:none}
+#app{display:none}
+.topbar{background:var(--dark);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;position:sticky;top:0;z-index:100;border-bottom:1px solid var(--border)}
+.topbar-logo{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:#fff}
+.topbar-logo span{color:var(--yb)}
+.topbar-badge{font-size:10px;letter-spacing:.14em;text-transform:uppercase;background:rgba(45,122,45,.15);color:var(--gb);border:1px solid var(--border);padding:3px 10px;border-radius:30px;margin-left:.75rem}
+.btn-logout{font-size:11px;letter-spacing:.12em;text-transform:uppercase;background:transparent;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.4);padding:6px 14px;border-radius:2px;cursor:pointer}
+.btn-logout:hover{border-color:var(--yb);color:var(--yb)}
+.app-body{display:flex;min-height:calc(100vh - 56px)}
+.sidebar{width:200px;background:var(--dark2);border-right:1px solid var(--border);padding:1.5rem 0;flex-shrink:0}
+.sidebar-item{display:flex;align-items:center;gap:.75rem;padding:.75rem 1.5rem;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.35);cursor:pointer;transition:.2s;border-left:2px solid transparent}
+.sidebar-item:hover{color:rgba(255,255,255,.7);background:rgba(255,255,255,.03)}
+.sidebar-item.active{color:var(--yb);border-left-color:var(--yb);background:rgba(232,200,50,.04)}
+.badge-c{margin-left:auto;background:#e74c3c;color:#fff;font-size:9px;font-weight:600;padding:2px 6px;border-radius:30px;min-width:18px;text-align:center}
+.main{flex:1;padding:2rem;overflow-y:auto}
+.view{display:none}
+.view.active{display:block}
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem;margin-bottom:2rem}
+.stat-card{background:var(--white);border-radius:4px;padding:1.5rem;border:1px solid rgba(0,0,0,.06)}
+.stat-label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--mid);margin-bottom:.5rem}
+.stat-value{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;color:var(--dark);line-height:1}
+.stat-sub{font-size:11px;color:var(--mid);margin-top:.3rem;font-weight:300}
+.gold .stat-value{color:var(--gb)}
+.sec-title{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;margin-bottom:1.25rem}
+.sec-title em{font-style:italic;color:var(--mid)}
+.card-box{background:var(--white);border-radius:4px;border:1px solid rgba(0,0,0,.06);overflow:hidden;margin-bottom:1.5rem}
+.card-box-hdr{padding:1rem 1.5rem;border-bottom:1px solid #f0ede8;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem}
+.card-box-hdr h3{font-size:13px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--mid)}
+.card-box-hdr a{font-size:11px;color:var(--gb);cursor:pointer;text-decoration:none}
+table{width:100%;border-collapse:collapse}
+th{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--mid);padding:.75rem 1.25rem;text-align:left;background:#faf9f7;border-bottom:1px solid #f0ede8;font-weight:500}
+td{font-size:13px;padding:.85rem 1.25rem;border-bottom:1px solid #f7f5f2;vertical-align:middle;color:var(--dark)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#faf9f7}
+.badge{display:inline-block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:30px;font-weight:500}
+.b-pending{background:rgba(214,137,16,.12);color:var(--orange)}
+.b-confirmed{background:rgba(45,122,45,.12);color:var(--gb)}
+.b-cancelled{background:rgba(192,57,43,.1);color:var(--red)}
+.btn-sm{font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:5px 12px;border-radius:2px;cursor:pointer;transition:.2s;border:1px solid;font-family:'Jost',sans-serif;font-weight:500}
+.b-ok{background:rgba(45,122,45,.1);color:var(--gb);border-color:rgba(45,122,45,.25)}
+.b-ok:hover{background:var(--gb);color:#fff}
+.b-no{background:rgba(192,57,43,.08);color:var(--red);border-color:rgba(192,57,43,.2)}
+.b-no:hover{background:var(--red);color:#fff}
+.btns{display:flex;gap:.4rem;flex-wrap:wrap}
+.notif-item{padding:1rem 1.5rem;border-bottom:1px solid #f0ede8;display:flex;align-items:flex-start;gap:.75rem}
+.notif-item:last-child{border-bottom:none}
+.nd{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.nd.new{background:#e74c3c}
+.nd.read{background:#ccc}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;align-items:center;justify-content:center;padding:1rem}
+.modal-overlay.open{display:flex}
+.modal{background:var(--white);border-radius:4px;padding:2rem;max-width:440px;width:100%;position:relative;max-height:90vh;overflow-y:auto}
+.modal h3{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;margin-bottom:1rem}
+.modal-close{position:absolute;top:.75rem;right:1rem;background:none;border:none;font-size:18px;cursor:pointer;color:var(--mid)}
+.fgroup{display:flex;flex-direction:column;gap:4px;margin-bottom:.85rem}
+.fgroup label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--mid)}
+.fgroup input,.fgroup select,.fgroup textarea{background:var(--light);border:1px solid var(--border);border-radius:2px;padding:8px 12px;font-family:'Jost',sans-serif;font-size:13px;color:var(--dark);outline:none;width:100%}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.btn-full{width:100%;padding:11px;background:var(--gb);color:#fff;border:none;font-family:'Jost',sans-serif;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;border-radius:2px;margin-top:.5rem}
+.btn-full:hover{background:#1a5a1a}
+.btn-add{background:var(--gb);color:#fff;border:none;padding:8px 16px;font-family:'Jost',sans-serif;font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;border-radius:2px;margin-bottom:1rem}
+.loading{display:flex;align-items:center;justify-content:center;padding:3rem;color:var(--mid);font-size:13px;gap:.75rem}
+.spinner{width:18px;height:18px;border:2px solid rgba(45,122,45,.2);border-top-color:var(--gb);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.toast{position:fixed;bottom:2rem;right:2rem;background:var(--dark);color:#fff;padding:.85rem 1.5rem;border-radius:3px;font-size:13px;border-left:3px solid var(--gb);z-index:1000;transform:translateY(100px);opacity:0;transition:.3s;max-width:300px}
+.toast.show{transform:none;opacity:1}
+.empty-msg{text-align:center;padding:2rem;color:var(--mid);font-size:13px;font-weight:300}
+.torneo-card{background:var(--white);border:1px solid rgba(0,0,0,.06);border-radius:6px;overflow:hidden;margin-bottom:1rem}
+.tc-hdr{background:linear-gradient(135deg,var(--gb),#1a5a1a);padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between}
+.tc-name{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;color:#fff}
+.tc-date{font-size:11px;color:rgba(255,255,255,.7);margin-top:.2rem}
+.tc-body{padding:1.25rem 1.5rem}
+.rank-row{display:flex;align-items:center;gap:1rem;padding:.85rem 1.5rem;border-bottom:1px solid #f7f5f2}
+.rank-row:last-child{border-bottom:none}
+.rank-pos{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:rgba(0,0,0,.15);width:28px;text-align:center;flex-shrink:0}
+.rank-pos.p1{color:var(--gb)}
+.rank-av{width:30px;height:30px;border-radius:50%;background:rgba(45,122,45,.1);border:1px solid rgba(45,122,45,.2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:var(--gb);flex-shrink:0}
+@media(max-width:640px){.sidebar{display:none}.main{padding:1rem}}
+</style>
+</head>
+<body>
+
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">Play Padel <span>Biccari</span></div>
+    <div class="login-sub">Pannello Gestore</div>
+    <input type="password" id="pwd" placeholder="Password" onkeydown="if(event.key==='Enter')doLogin()"/>
+    <button class="btn-login" onclick="window.doLogin()">Accedi</button>
+    <div class="login-err" id="login-err">Password errata.</div>
+  </div>
+</div>
+
+<div id="app">
+  <div class="topbar">
+    <div style="display:flex;align-items:center">
+      <div class="topbar-logo">Play Padel <span>Biccari</span></div>
+      <div class="topbar-badge">Gestore</div>
+    </div>
+    <button class="btn-logout" onclick="window.doLogout()">Esci</button>
+  </div>
+  <div class="app-body">
+    <div class="sidebar">
+      <div class="sidebar-item active" onclick="window.showView('dashboard')" id="snav-dashboard">📊 Dashboard</div>
+      <div class="sidebar-item" onclick="window.showView('prenotazioni')" id="snav-prenotazioni">📅 Prenotazioni <span class="badge-c" id="bc-pren"></span></div>
+      <div class="sidebar-item" onclick="window.showView('tornei')" id="snav-tornei">🏆 Tornei</div>
+      <div class="sidebar-item" onclick="window.showView('utenti')" id="snav-utenti">👥 Utenti</div>
+      <div class="sidebar-item" onclick="window.showView('partite')" id="snav-partite">🎾 Partite</div>
+      <div class="sidebar-item" onclick="window.showView('notifiche')" id="snav-notifiche">🔔 Notifiche <span class="badge-c" id="bc-notif"></span></div>
+    </div>
+    <div class="main">
+
+      <!-- DASHBOARD -->
+      <div class="view active" id="view-dashboard">
+        <div class="sec-title">Buongiorno, <em>Giuseppe</em> 👋</div>
+        <div class="stats-row">
+          <div class="stat-card gold"><div class="stat-label">Da confermare</div><div class="stat-value" id="s-pending">–</div><div class="stat-sub">prenotazioni</div></div>
+          <div class="stat-card"><div class="stat-label">Confermate</div><div class="stat-value" id="s-conf">–</div><div class="stat-sub">totali</div></div>
+          <div class="stat-card"><div class="stat-label">Utenti</div><div class="stat-value" id="s-utenti">–</div><div class="stat-sub">registrati</div></div>
+          <div class="stat-card"><div class="stat-label">Tornei</div><div class="stat-value" id="s-tornei">–</div><div class="stat-sub">attivi</div></div>
+        </div>
+        <div class="card-box">
+          <div class="card-box-hdr"><h3>⏳ Prenotazioni in attesa</h3><a onclick="window.showView('prenotazioni')">Vedi tutte →</a></div>
+          <div id="dash-pren"><div class="loading"><div class="spinner"></div>Caricamento...</div></div>
+        </div>
+        <div class="card-box">
+          <div class="card-box-hdr"><h3>❌ Annullamenti recenti</h3></div>
+          <div id="dash-cancellati"><div class="loading"><div class="spinner"></div>Caricamento...</div></div>
+        </div>
+      </div>
+
+      <!-- PRENOTAZIONI -->
+      <div class="view" id="view-prenotazioni">
+        <div class="sec-title">Gestione <em>prenotazioni</em></div>
+        <select id="filter-pren" onchange="renderPrenotazioni()" style="font-family:'Jost',sans-serif;font-size:12px;padding:7px 12px;border:1px solid var(--border);border-radius:2px;background:var(--white);color:var(--dark);outline:none;margin-bottom:1rem">
+          <option value="tutti">Tutte</option>
+          <option value="pending">In attesa</option>
+          <option value="confirmed">Confermate</option>
+          <option value="cancelled">Annullate</option>
+        </select>
+        <div class="card-box"><div id="pren-table"><div class="loading"><div class="spinner"></div>Caricamento...</div></div></div>
+      </div>
+
+      <!-- TORNEI -->
+      <div class="view" id="view-tornei">
+        <div class="sec-title">Gestione <em>tornei</em></div>
+        <button class="btn-add" onclick="window.openModal('createTorneo')">+ Crea nuovo torneo</button>
+        <div id="tornei-list"><div class="loading"><div class="spinner"></div>Caricamento...</div></div>
+        <div style="margin-top:2rem">
+          <div class="sec-title" style="font-size:20px">Ranking <em>tornei</em></div>
+          <div class="card-box">
+            <div class="card-box-hdr"><h3>Classifica generale</h3><button class="btn-sm b-ok" onclick="window.openModal('addRankPts')">+ Aggiungi punti</button></div>
+            <div id="torneo-rank-list"><div class="loading"><div class="spinner"></div>Caricamento...</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- UTENTI -->
+      <div class="view" id="view-utenti">
+        <div class="sec-title">Utenti <em>registrati</em></div>
+        <div class="card-box"><div id="utenti-table"><div class="loading"><div class="spinner"></div>Caricamento...</div></div></div>
+      </div>
+
+      <!-- PARTITE -->
+      <div class="view" id="view-partite">
+        <div class="sec-title">Partite <em>organizzate</em></div>
+        <div class="card-box"><div id="partite-table"><div class="loading"><div class="spinner"></div>Caricamento...</div></div></div>
+      </div>
+
+      <!-- NOTIFICHE -->
+      <div class="view" id="view-notifiche">
+        <div class="sec-title">Notifiche <em>& avvisi</em></div>
+        <div class="card-box" id="notif-list-box"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="modal-createTorneo">
+  <div class="modal">
+    <button class="modal-close" onclick="window.closeModal('createTorneo')">×</button>
+    <h3>Crea torneo</h3>
+    <div class="fgroup"><label>Nome torneo</label><input type="text" id="ct-nome" placeholder="Sunday Tournament"/></div>
+    <div class="frow">
+      <div class="fgroup"><label>Data</label><input type="date" id="ct-data"/></div>
+      <div class="fgroup"><label>Orario</label><input type="time" id="ct-ora" value="10:00"/></div>
+    </div>
+    <div class="frow">
+      <div class="fgroup"><label>Max iscritti</label><input type="number" id="ct-max" value="16" min="4"/></div>
+      <div class="fgroup"><label>Iscrizione (€)</label><input type="number" id="ct-prezzo" value="5" min="0"/></div>
+    </div>
+    <div class="fgroup"><label>Descrizione</label><textarea id="ct-desc" rows="3" style="resize:none" placeholder="Torneo di padel aperto a tutti..."></textarea></div>
+    <button class="btn-full" onclick="window.createTorneo()">Pubblica torneo</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-addRankPts">
+  <div class="modal">
+    <button class="modal-close" onclick="window.closeModal('addRankPts')">×</button>
+    <h3>Aggiungi punti torneo</h3>
+    <div class="fgroup"><label>Nome giocatore</label><input type="text" id="rp-nome" placeholder="Mario Rossi"/></div>
+    <div class="fgroup"><label>Punti</label><input type="number" id="rp-pts" value="100" min="1"/></div>
+    <div class="fgroup"><label>Motivo</label><input type="text" id="rp-motivo" placeholder="1° posto Sunday Tournament"/></div>
+    <button class="btn-full" onclick="window.addRankPts()">Aggiungi punti</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, orderBy, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js";
+
+const app = initializeApp({
+  apiKey:"AIzaSyDedRUBLyAT6yRxQ4ZJWwwJIlVvFyLEW8Q",
+  authDomain:"playpadel-biccari.firebaseapp.com",
+  projectId:"playpadel-biccari",
+  storageBucket:"playpadel-biccari.firebasestorage.app",
+  messagingSenderId:"239722542498",
+  appId:"1:239722542498:web:c085d112c3c560686c2efb"
+});
+const db = getFirestore(app);
+
+window.doLogin=function(){
+  if(document.getElementById('pwd').value==='Peroncino29'){
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('app').style.display='block';
+    loadAll();
+  } else {
+    document.getElementById('login-err').style.display='block';
+    document.getElementById('pwd').value='';
+  }
+};
+window.doLogout=function(){
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('app').style.display='none';
+};
+
+let allPren=[],allUtenti=[],allPartite=[],allTornei=[],allRank=[],notifiche=[];
+
+async function loadAll(){
+  await Promise.all([loadPren(),loadUtenti(),loadPartite(),loadTornei(),loadRank()]);
+  updateStats();renderDashboard();
+}
+async function loadPren(){try{const s=await getDocs(query(collection(db,'prenotazioni'),orderBy('createdAt','desc')));allPren=[];s.forEach(d=>allPren.push({id:d.id,...d.data()}));}catch(e){}}
+async function loadUtenti(){try{const s=await getDocs(query(collection(db,'utenti'),orderBy('createdAt','desc')));allUtenti=[];s.forEach(d=>allUtenti.push({id:d.id,...d.data()}));}catch(e){}}
+async function loadPartite(){try{const s=await getDocs(query(collection(db,'partite'),orderBy('createdAt','desc')));allPartite=[];s.forEach(d=>allPartite.push({id:d.id,...d.data()}));}catch(e){}}
+async function loadTornei(){try{const s=await getDocs(query(collection(db,'tornei'),orderBy('createdAt','desc')));allTornei=[];s.forEach(d=>allTornei.push({id:d.id,...d.data()}));}catch(e){}}
+async function loadRank(){try{const s=await getDocs(query(collection(db,'torneo_ranking'),orderBy('pts','desc')));allRank=[];s.forEach(d=>allRank.push({id:d.id,...d.data()}));}catch(e){}}
+
+function updateStats(){
+  const p=allPren.filter(x=>x.stato==='pending').length;
+  const c=allPren.filter(x=>x.stato==='confirmed').length;
+  document.getElementById('s-pending').textContent=p;
+  document.getElementById('s-conf').textContent=c;
+  document.getElementById('s-utenti').textContent=allUtenti.length;
+  document.getElementById('s-tornei').textContent=allTornei.length;
+  document.getElementById('bc-pren').textContent=p||'';
+  const un=notifiche.filter(n=>!n.letta).length;
+  document.getElementById('bc-notif').textContent=un||'';
+}
+
+function renderDashboard(){
+  const pending=allPren.filter(p=>p.stato==='pending');
+  const dp=document.getElementById('dash-pren');
+  if(!pending.length) dp.innerHTML=empty('✓ Nessuna prenotazione in attesa');
+  else dp.innerHTML=tbl(['Utente','Data','Orario','Telefono','Azioni'],
+    pending.slice(0,6).map(p=>`<tr>
+      <td><strong>${p.nome} ${p.cognome||''}</strong>${p.note?`<br><small style="color:var(--mid)">${p.note}</small>`:''}</td>
+      <td>${fd(p.data)}</td><td><strong>${p.orario||''}</strong></td>
+      <td><a href="tel:${p.telefono||''}" style="color:var(--gb);text-decoration:none">${p.telefono||'–'}</a></td>
+      <td><div class="btns"><button class="btn-sm b-ok" onclick="window.confirmPren('${p.id}')">✓ Conferma</button><button class="btn-sm b-no" onclick="window.cancelPren('${p.id}')">✗ Rifiuta</button></div></td>
+    </tr>`).join(''));
+
+  const cancellati=allPren.filter(p=>p.stato==='cancelled').slice(0,5);
+  const dc=document.getElementById('dash-cancellati');
+  if(!cancellati.length) dc.innerHTML=empty('Nessun annullamento recente');
+  else dc.innerHTML=tbl(['Utente','Data','Orario','Telefono'],
+    cancellati.map(p=>`<tr>
+      <td><strong>${p.nome} ${p.cognome||''}</strong></td>
+      <td>${fd(p.data)}</td><td>${p.orario||''}</td>
+      <td><a href="tel:${p.telefono||''}" style="color:var(--gb);text-decoration:none">${p.telefono||'–'}</a></td>
+    </tr>`).join(''));
+}
+
+window.renderPrenotazioni=function(){
+  const filter=document.getElementById('filter-pren')?.value||'tutti';
+  const list=filter==='tutti'?allPren:allPren.filter(p=>p.stato===filter);
+  const el=document.getElementById('pren-table');
+  if(!list.length){el.innerHTML=empty('Nessuna prenotazione trovata');return;}
+  el.innerHTML=tbl(['Utente','Tel.','Data','Orario','Note','Stato','Azioni'],
+    list.map(p=>{
+      const sc=p.stato==='pending'?'b-pending':p.stato==='confirmed'?'b-confirmed':'b-cancelled';
+      const sl=p.stato==='pending'?'In attesa':p.stato==='confirmed'?'Confermata':'Annullata';
+      const act=p.stato==='pending'
+        ?`<button class="btn-sm b-ok" onclick="window.confirmPren('${p.id}')">✓</button><button class="btn-sm b-no" onclick="window.cancelPren('${p.id}')">✗</button>`
+        :p.stato==='confirmed'?`<button class="btn-sm b-no" onclick="window.cancelPren('${p.id}')">Cancella</button>`:'–';
+      return `<tr>
+        <td><strong>${p.nome} ${p.cognome||''}</strong></td>
+        <td><a href="tel:${p.telefono||''}" style="color:var(--gb);text-decoration:none">${p.telefono||'–'}</a></td>
+        <td>${fd(p.data)}</td><td><strong>${p.orario||''}</strong></td>
+        <td style="font-size:12px;color:var(--mid)">${p.note||'–'}</td>
+        <td><span class="badge ${sc}">${sl}</span></td>
+        <td><div class="btns">${act}</div></td>
+      </tr>`;
+    }).join(''));
+};
+
+window.confirmPren=async function(id){
+  try{await updateDoc(doc(db,'prenotazioni',id),{stato:'confirmed'});addNotif('✅ Prenotazione confermata');await loadPren();renderDashboard();renderPrenotazioni();updateStats();}catch(e){toast('Errore.');}
+};
+window.cancelPren=async function(id){
+  if(!confirm('Cancellare questa prenotazione?'))return;
+  try{await updateDoc(doc(db,'prenotazioni',id),{stato:'cancelled'});addNotif('❌ Prenotazione cancellata');await loadPren();renderDashboard();renderPrenotazioni();updateStats();}catch(e){toast('Errore.');}
+};
+
+// TORNEI
+window.createTorneo=async function(){
+  const nome=v('ct-nome'),data=v('ct-data'),ora=v('ct-ora'),max=parseInt(v('ct-max'))||16,prezzo=parseInt(v('ct-prezzo'))||5,desc=v('ct-desc');
+  if(!nome||!data){toast('Inserisci nome e data.');return;}
+  try{
+    await addDoc(collection(db,'tornei'),{nome,data,ora,maxIscritti:max,prezzo,descrizione:desc,iscritti:[],createdAt:serverTimestamp()});
+    addNotif(`🏆 Torneo "${nome}" creato per il ${fd(data)}`);
+    closeModal('createTorneo');
+    await loadTornei();renderTornei();updateStats();
+    toast(`✅ Torneo "${nome}" pubblicato!`);
+  }catch(e){toast('Errore. Riprova.');}
+};
+
+window.renderTornei=function(){
+  const el=document.getElementById('tornei-list');
+  if(!allTornei.length){el.innerHTML='<div class="empty-msg">Nessun torneo creato. Premi "+ Crea nuovo torneo"!</div>';return;}
+  el.innerHTML=allTornei.map(t=>{
+    const isc=t.iscritti||[];
+    return `<div class="torneo-card">
+      <div class="tc-hdr">
+        <div><div class="tc-name">${t.nome||'Torneo'}</div><div class="tc-date">${fd(t.data)} · ${t.ora||''}</div></div>
+        <button class="btn-sm" style="background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.2)" onclick="window.deleteTorneo('${t.id}')">Elimina</button>
+      </div>
+      <div class="tc-body">
+        <div style="font-size:13px;color:var(--mid);margin-bottom:.5rem;font-weight:300">${t.descrizione||'–'}</div>
+        <div style="font-size:13px"><strong>${isc.length}</strong> / ${t.maxIscritti||16} iscritti · <strong>${t.prezzo||5}€</strong> iscrizione</div>
+      </div>
+    </div>`;
+  }).join('');
+  renderTorneoRank();
+};
+
+window.deleteTorneo=async function(id){
+  if(!confirm('Eliminare questo torneo?'))return;
+  try{await deleteDoc(doc(db,'tornei',id));await loadTornei();renderTornei();updateStats();toast('Torneo eliminato');}catch(e){toast('Errore.');}
+};
+
+function renderTorneoRank(){
+  const el=document.getElementById('torneo-rank-list');
+  if(!allRank.length){el.innerHTML=empty('Nessun punto assegnato. Usa "+ Aggiungi punti" dopo ogni torneo.');return;}
+  el.innerHTML=allRank.map((p,i)=>`<div class="rank-row">
+    <div class="rank-pos ${i===0?'p1':''}">${i+1}</div>
+    <div class="rank-av">${(p.nome||'?').split(' ').map(w=>w[0]).join('').slice(0,2)}</div>
+    <div style="flex:1;font-size:13px;font-weight:500">${p.nome||'–'}</div>
+    <div style="font-size:16px;font-weight:500;color:var(--gb);font-family:'Cormorant Garamond',serif">${p.pts||0} <span style="font-size:11px;color:var(--mid);font-family:'Jost',sans-serif">pts</span></div>
+  </div>`).join('');
+}
+
+window.addRankPts=async function(){
+  const nome=v('rp-nome'),pts=parseInt(v('rp-pts'))||0,motivo=v('rp-motivo');
+  if(!nome){toast('Inserisci il nome.');return;}
+  try{
+    const snap=await getDocs(query(collection(db,'torneo_ranking'),where('nome','==',nome)));
+    if(!snap.empty){
+      const d=snap.docs[0];
+      await updateDoc(doc(db,'torneo_ranking',d.id),{pts:(d.data().pts||0)+pts});
+    } else {
+      await addDoc(collection(db,'torneo_ranking'),{nome,pts,createdAt:serverTimestamp()});
+    }
+    addNotif(`✅ +${pts} pts a ${nome} (${motivo})`);
+    closeModal('addRankPts');
+    await loadRank();renderTorneoRank();
+    toast(`✅ +${pts} punti a ${nome}`);
+  }catch(e){toast('Errore. Riprova.');}
+};
+
+// UTENTI
+window.renderUtenti=function(){
+  const el=document.getElementById('utenti-table');
+  if(!allUtenti.length){el.innerHTML=empty('Nessun utente registrato ancora');return;}
+  el.innerHTML=tbl(['Nome','Email','Telefono','Partite','Registrato'],
+    allUtenti.map(u=>`<tr>
+      <td><strong>${u.nome||''} ${u.cognome||''}</strong></td>
+      <td style="font-size:12px;color:var(--mid)">${u.email||'–'}</td>
+      <td><a href="tel:${u.telefono||''}" style="color:var(--gb);text-decoration:none">${u.telefono||'–'}</a></td>
+      <td>${u.partite||0}</td>
+      <td style="font-size:11px;color:var(--mid)">${u.createdAt?.toDate?(new Date(u.createdAt.toDate()).toLocaleDateString('it-IT')):'–'}</td>
+    </tr>`).join(''));
+};
+
+// PARTITE
+window.renderPartite=function(){
+  const el=document.getElementById('partite-table');
+  if(!allPartite.length){el.innerHTML=empty('Nessuna partita organizzata');return;}
+  el.innerHTML=tbl(['Titolo','Data','Orario','Tipo','Giocatori','Azioni'],
+    allPartite.map(m=>{
+      const filled=(m.players||[]).filter(p=>p!==null).length;
+      return `<tr>
+        <td><strong>${m.titolo||'Partita'}</strong></td>
+        <td>${fd(m.data)}</td><td>${m.ora||''}</td>
+        <td><span class="badge ${m.tipo==='privata'?'b-cancelled':'b-confirmed'}">${m.tipo||'pubblica'}</span></td>
+        <td>${filled}/${m.slots||4}</td>
+        <td><button class="btn-sm b-no" onclick="window.deletePartita('${m.id}')">Elimina</button></td>
+      </tr>`;
+    }).join(''));
+};
+window.deletePartita=async function(id){
+  if(!confirm('Eliminare?'))return;
+  try{await deleteDoc(doc(db,'partite',id));await loadPartite();renderPartite();}catch(e){toast('Errore.');}
+};
+
+// NOTIFICHE
+function addNotif(testo){
+  const now=new Date();
+  notifiche.unshift({testo,ora:`${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`,letta:false});
+  updateStats();
+}
+window.renderNotifiche=function(){
+  const el=document.getElementById('notif-list-box');
+  if(!notifiche.length){el.innerHTML=empty('Nessuna notifica');return;}
+  el.innerHTML=notifiche.map(n=>`<div class="notif-item"><div class="nd ${n.letta?'read':'new'}"></div><div><div style="font-size:13px">${n.testo}</div><div style="font-size:11px;color:var(--mid);margin-top:.2rem">Oggi ${n.ora}</div></div></div>`).join('');
+  notifiche.forEach(n=>n.letta=true);updateStats();
+};
+
+// UTILS
+window.showView=function(id){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.sidebar-item').forEach(s=>s.classList.remove('active'));
+  document.getElementById('view-'+id).classList.add('active');
+  document.getElementById('snav-'+id).classList.add('active');
+  if(id==='prenotazioni')renderPrenotazioni();
+  if(id==='tornei')renderTornei();
+  if(id==='utenti')renderUtenti();
+  if(id==='partite')renderPartite();
+  if(id==='notifiche')renderNotifiche();
+  if(id==='dashboard')renderDashboard();
+};
+function tbl(heads,rows){return`<table><thead><tr>${heads.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table>`;}
+function v(id){return document.getElementById(id)?.value?.trim()||'';}
+function fd(d){if(!d)return'–';const p=d.split('-');return p.length<3?d:`${p[2]}/${p[1]}/${p[0]}`;}
+function empty(msg){return`<div class="empty-msg">${msg}</div>`;}
+window.toast=function(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3500);};
+window.openModal=function(id){document.getElementById('modal-'+id).classList.add('open');};
+window.closeModal=function(id){document.getElementById('modal-'+id).classList.remove('open');};
+const today=new Date().toISOString().split('T')[0];
+const ctData=document.getElementById('ct-data');if(ctData)ctData.min=today;
+</script>
+</body>
+</html>
